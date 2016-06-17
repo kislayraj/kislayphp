@@ -1,5 +1,5 @@
-# kislayphp
-kislayphp Web Programming Framework
+# kislayphp 
+kislayphp 0.9  Web Programming Framework
 =============================
 
 Thank you for choosing kislayphp - a high-performance component-based PHP framework.
