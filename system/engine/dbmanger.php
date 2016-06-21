@@ -1,7 +1,7 @@
 <?php
  class dbmanger{
 	protected $con=NULL;
-	private $db=array('HOSTNAME'=>'localhost','USER'=>'root','PASS'=>'password','DB'=>'robotic','driver'=>"mysql");
+	private $db=array('HOSTNAME'=>'localhost','USER'=>'root','PASS'=>'password','DB'=>'robotic','driver'=>"mysqli");
 	function getdb(){
 		include_once Db.$this->db['driver'].'.php';
 	return new $this->db['driver']($this->db);
