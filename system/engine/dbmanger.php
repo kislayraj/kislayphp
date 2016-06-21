@@ -2,7 +2,7 @@
  class dbmanger{
 	protected $con=NULL;
 	//Mysqli
-	private $db=array('HOSTNAME'=>'localhost','USER'=>'root','PASS'=>'','DB'=>'database','driver'=>"pdo");
+	private $db=array('HOSTNAME'=>'localhost','USER'=>'root','PASS'=>'','DB'=>'database','driver'=>"mysqli");
 	/*
 	Mysql
 	private $db=array('HOSTNAME'=>'localhost','USER'=>'root','PASS'=>'','DB'=>'skelvescrm','driver'=>"mysql");
