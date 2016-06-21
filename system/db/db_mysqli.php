@@ -49,13 +49,10 @@ class db_mysqli extends sql{
 	return $row->fetch_assoc();
 	}
 	function close(){
-	if($this->con){
-		$this->con->close();
-	//return mysql_close($this->con);
-	}
+
 	}
 	function __destruct(){
-		$this->con->close();
+	
 	foreach(get_object_vars($this) as $k=>$v):
     unset($this->$k);
 	endforeach;
