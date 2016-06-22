@@ -17,7 +17,9 @@ class response{
 	if(!file_exists($file)){
 	$file=Theme."common/error.kis";
 	}
+	if(!WS){
 	include_once($file);
+	}
 	}
 	function renderme($files){
 	$helper=$this->reg_helper();
