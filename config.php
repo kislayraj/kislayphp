@@ -10,6 +10,8 @@ define('root',ABS_PATH.'/root/');
 define('Theme',VIEW.'theme/sample/');
 define('Db',dirname(__FILE__).'/system/db/');
 define('plugin',ABS_PATH.'/vendor/');
+define('WS',false);
+
 define('DefualtClass','commonApp');
 function __autoload($class_name) {
 		
