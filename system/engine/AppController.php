@@ -6,10 +6,12 @@ class AppController{
 		protected $helper=array();
 		private $variable=array();
 		private $call;
+		protected $output;
 		function __construct($model,$data,$call){
 		$this->data=$data;
 		$this->model=$model;
-		$this->call=$call;		
+		$this->call=$call;
+		$this->output=new output();
 		}
 		function __get($key){
 		if(in_array($key,$this->helper)):
