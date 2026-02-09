@@ -66,6 +66,16 @@ Build the extensions in this repo and run with PHP:
 - `kislayphp_eventbus`
 - PHP Redis extension (`redis`) for discovery storage
 
+## Extension Repos
+
+- Core: https://github.com/KislayPHP/core
+- EventBus: https://github.com/KislayPHP/eventbus
+- Discovery: https://github.com/KislayPHP/discovery
+- Gateway: https://github.com/KislayPHP/gateway
+- Config: https://github.com/KislayPHP/config
+- Metrics: https://github.com/KislayPHP/metrics
+- Queue: https://github.com/KislayPHP/queue
+
 ## Run
 
 From the repo root:
