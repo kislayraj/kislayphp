@@ -1,26 +1,29 @@
-# Kislay Ecosystem Examples
+# Kislay PHP Production Skeleton
 
-This repository contains integration examples for the Kislay PHP extension ecosystem.
+A production-ready boilerplate for the Kislay ecosystem, inspired by Express.js and Laravel.
 
-## Examples
+## Directory Structure
 
-### 1. Ecosystem Full Flash ([ecosystem_example.php](./ecosystem_example.php))
-Demonstrates a complete microservice communication loop:
-- **Registry**: Tracks service health with active pings.
-- **Gateway**: Handles routing and automatic header injection (X-Forwarded-*).
-- **Core App**: Non-blocking HTTP server implementation.
-- **Async Client**: HTTP client with automatic **Retries** and **Correlation-ID** propagation.
+- `bin/`: Executables (e.g., server starter)
+- `config/`: Application configuration
+- `public/`: Static assets
+- `src/`: Application logic
+  - `Controllers/`: Request handlers
+  - `Middleware/`: Request filtering
+  - `Routes/`: API definitions
+- `index.php`: Main entry point
 
-## Prerequisites
+## Getting Started
 
-Ensure the following extensions are built and enabled:
-1. kislayphp_extension (Core)
-2. kislayphp_gateway (Gateway)
-3. kislayphp_discovery (Registry)
-
-## Running the example
+1. Install Kislay extensions (`https`, `gateway`, `discovery`).
+2. Run the server:
 
 ```bash
-# Run with extensions loaded
-php -d extension=kislayphp_extension.so \n    -d extension=kislayphp_gateway.so \n    -d extension=kislayphp_discovery.so \n    ecosystem_example.php
+./bin/server
 ```
+
+## API Endpoints
+
+- `GET /`: Welcome message
+- `GET /health`: Liveness check
+- `GET /api/v1/status`: Scoped health check
