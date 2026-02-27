@@ -8,8 +8,8 @@ return function($app) {
     $app->get('/', [$controller, 'welcome']);
     $app->get('/health', [$controller, 'health']);
 
-    // Example: Scoped routes
     $app->group('/api/v1', function($group) use ($controller) {
-        $group->get('/status', [$controller, 'health']);
+        $group->get('/users', [$controller, 'getUsers']);
+        $group->post('/users', [$controller, 'createUser']);
     });
 };

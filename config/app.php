@@ -8,6 +8,10 @@ return [
         'gateway' => 9008,
         'discovery' => 9090
     ],
+    'database' => [
+        'driver' => 'sqlite',
+        'path' => __DIR__ . '/../storage/database.sqlite'
+    ],
     'services' => [
         'user-service' => [
             'port' => 9001,
