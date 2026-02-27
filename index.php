@@ -1,15 +1,20 @@
 <?php
 
-// 1. Autoloader (Simulated PSR-4)
-spl_autoload_register(function ($class) {
-    $prefix = 'App\';
-    $base_dir = __DIR__ . '/src/';
-    $len = strlen($prefix);
-    if (strncmp($prefix, $class, $len) !== 0) return;
-    $relative_class = substr($class, $len);
-    $file = $base_dir . str_replace('\', '/', $relative_class) . '.php';
-    if (file_exists($file)) require $file;
-});
+// 1. Autoloader (Composer & Fallback)
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+} else {
+    // Fallback PSR-4 for portability without composer install
+    spl_autoload_register(function ($class) {
+        $prefix = 'App\';
+        $base_dir = __DIR__ . '/src/';
+        $len = strlen($prefix);
+        if (strncmp($prefix, $class, $len) !== 0) return;
+        $relative_class = substr($class, $len);
+        $file = $base_dir . str_replace('\', '/', $relative_class) . '.php';
+        if (file_exists($file)) require $file;
+    });
+}
 
 // 2. Initialize Core App
 $app = new Kislay\Core\App();

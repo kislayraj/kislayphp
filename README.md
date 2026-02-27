@@ -13,10 +13,16 @@ A production-ready boilerplate for the Kislay ecosystem, inspired by Express.js 
   - `Routes/`: API definitions
 - `index.php`: Main entry point
 
-## Getting Started
+## Installation & Setup
 
-1. Install Kislay extensions (`https`, `gateway`, `discovery`).
-2. Run the server:
+1. Ensure Kislay extensions are installed (`https`, `gateway`, `discovery`).
+2. Install dependencies:
+
+```bash
+composer install
+```
+
+3. Run the server:
 
 ```bash
 ./bin/server
