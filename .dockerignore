@@ -1,0 +1,7 @@
+.git
+.gitignore
+.qodo
+.DS_Store
+vendor
+storage/*.sqlite
+*.log

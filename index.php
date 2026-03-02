@@ -16,7 +16,14 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 
 // 2. Initialize Core App
 $app = new Kislay\Core\App();
-$config = require __DIR__ . '/config/app.php';
+$config = App\Services\Configuration::all();
+
+if (class_exists('\\Kislay\\Persistence\\DB')) {
+    \Kislay\Persistence\DB::boot($config['database']);
+    \Kislay\Persistence\DB::attach($app);
+} elseif (class_exists('\\Kislay\\Persistence\\Runtime')) {
+    \Kislay\Persistence\Runtime::attach($app);
+}
 
 // 3. Register Global Middleware
 $logger = new App\Middleware\RequestLogger();
