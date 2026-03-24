@@ -49,8 +49,8 @@ If you need strict reproducibility, pin explicit versions in your deployment man
 
 When `kislayphp/persistence` is installed, the skeleton bootstraps it automatically:
 
-- `Kislay\\Persistence\\DB`
-- `Kislay\\Persistence\\Eloquent`
+- `Kislay\Persistence\DB`
+- `Kislay\Persistence\Eloquent`
 
 Core behavior handled in extension:
 
@@ -73,6 +73,11 @@ $count = Kislay\Persistence\DB::transaction(function (PDO $db) {
 });
 ```
 
+If `Kislay\Persistence\DB` is not available but `Kislay\Persistence\Runtime` is installed,
+the skeleton falls back to `Kislay\Persistence\Runtime::attach($app)` automatically for
+request-lifecycle tracking. `Database::transaction()` likewise delegates to
+`Kislay\Persistence\Runtime::transaction()` when present.
+
 ### Unified config class (developer API)
 
 Developers should read configuration from one class:
@@ -82,12 +87,19 @@ use App\Services\Configuration;
 
 $config = Configuration::all();
 $dbDefault = Configuration::get('database.default');
+$version   = Configuration::get('version', '0.0.3');
 ```
 
 Merge behavior:
-- Remote config (from `Kislay\\Config\\ConfigClient`) is loaded first.
+- Remote config (from `Kislay\Config\ConfigClient`) is loaded first.
 - Local `config/app.php` is applied after remote and overrides matching keys.
 - If remote is unavailable, local config is used as-is.
+
+To force a reload (e.g., after a hot-config push):
+
+```php
+$fresh = Configuration::refresh(); // clears cache and re-merges
+```
 
 ### Laravel-style model usage
 
@@ -103,6 +115,11 @@ $user = User::create([
     'name' => 'Jane',
     'email' => 'jane@example.com',
 ]);
+
+// createUnique() handles auto-generated emails (up to 5 retries) and
+// throws App\Models\Exceptions\EmailExistsException on a duplicate.
+$user = User::createUnique('Jane');                         // auto-generate email
+$user = User::createUnique('Jane', 'jane@example.com');    // explicit email
 
 $existingOrNew = User::firstOrCreate(
     ['email' => 'ops@example.com'],
@@ -155,12 +172,17 @@ docker compose down
 
 ### Docker Environment Variables
 
-- `HTTP_PORT` (default `9000`)
+- `HTTP_PORT` (default `9000`) — port the HTTP server binds to
+- `GATEWAY_PORT` (default `9008`) — port the API gateway binds to
+- `DISCOVERY_PORT` (default `9090`) — port the discovery service binds to
 - `APP_ENV` (default `production`)
+- `APP_VERSION` (default `0.0.3`) — reported by `GET /`
 - `DB_CONNECTION` (default `sqlite`)
-- `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`
-- `SQLITE_DB_PATH` (default `/app/storage/database.sqlite`)
-- `MYSQL_*`, `MARIADB_*`, `PGSQL_*` connection env vars
+- `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` — generic DB overrides
+- `SQLITE_DB_PATH` (default `/app/storage/database.sqlite`); alias: `DB_PATH`
+- `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USERNAME`, `MYSQL_PASSWORD`, `MYSQL_CHARSET`
+- `MARIADB_HOST`, `MARIADB_PORT`, `MARIADB_DATABASE`, `MARIADB_USERNAME`, `MARIADB_PASSWORD`, `MARIADB_CHARSET`
+- `PGSQL_HOST`, `PGSQL_PORT`, `PGSQL_DATABASE`, `PGSQL_USERNAME`, `PGSQL_PASSWORD`
 - `PIE_VERSION` build arg (default `1.3.8`)
 - `CORE_VERSION` build arg (default `0.0.3`)
 - `GATEWAY_VERSION` build arg (default `0.0.2`)
@@ -199,7 +221,7 @@ curl -i -X POST http://127.0.0.1:9000/api/v1/users \
 
 ## API Endpoints
 
-- `GET /`: Welcome message
+- `GET /`: Welcome message (includes `version` from `APP_VERSION` env / config)
 - `GET /health`: Liveness check
 - `GET /api/v1/users`: List users from SQLite with pagination
 : Query params: `page` (default `1`), `limit` (default `20`, max `100`)
@@ -218,4 +240,15 @@ ab -k -n 5000 -c 60 "http://127.0.0.1:9008/api/v1/users?page=1&limit=20"
 ab -l -n 2000 -c 30 -p tmp/post-user.json -T application/json http://127.0.0.1:9008/api/v1/users
 ```
 
-Latest report: `docs/PERFORMANCE_REPORT_2026-02-28.md`
+### v0.0.7 Benchmark Results (10k req, c=100, Apple Silicon)
+
+| Scenario | Req/s | p95 ms |
+|---|---|---|
+| plaintext | **16,375** | 8 ms |
+| json (small) | **17,918** | 7 ms |
+| json (100 KB) | **13,134** | 8 ms |
+| route param | **17,496** | 7 ms |
+| query string | **18,591** | 7 ms |
+
+Zero failed requests. Full report: `docs/PERFORMANCE_REPORT_2026-03-24.md`
+
